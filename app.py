@@ -1,8 +1,10 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy import String, Date, Float, Integer, ForeignKey
 from datetime import date
+from flask_marshmallow import Marshmallow
+from marshmallow import ValidationError 
 
 app = Flask(__name__) 
 
@@ -12,8 +14,10 @@ class Base(DeclarativeBase):
     pass
 
 db = SQLAlchemy(model_class = Base)
+ma = Marshmallow()
 
 db.init_app(app)
+ma.init_app(app)
 
 class Customers(Base):
     __tablename__ = 'customers'
@@ -62,7 +66,50 @@ class Ticket_mechanics(Base):
     mechanics: Mapped['Mechanics'] = relationship('Mechanics', back_populates='ticket_mechanics')
 
 
+class CustomerSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Customers
+
+customer_schema = CustomerSchema()
+customer_schema = CustomerSchema(many=True)
+
+@app.route('/customers', methods=['POST'])
+def create_customer():
+    try:
+        data = customer_schema.load(request.json)
+    except ValidationError as e:
+        return jsonify(e.messages)
+    
+    print("------------- Translated Data ---------------")
+    print(data)
+    new_customer = Customers(**data)
+    db.session.add(new_customer)
+    db.session.commit()
+    return customer_schema.jsonify(new_customer)
+
+#
+@app.route('/customers', methods=['GET'])
+def read_customer(customer_id):
+    customer = db.session.get(Customers, customer_id)
+    return customer_schema.jsonify(customer)
+
+
+@app.route('/customers/<int:customer_id>', methods=['GET'])
+def read_customers():
+    customers = db.session.query(Customers).all()
+    return customer_schema.jsonify(customers)
+
+
+@app.route('/customers/<int:customer_id>', methods=['DELETE'])
+def delete_customer(customer_id):
+    customer = db.session.get(Customers, customer_id)
+    db.session.delete(customer)
+    db.session.commit()
+    return jsonify({"Message": f"Successfully deleted customer {customer_id}"})
+
 
 
 with app.app_context():
     db.create_all() 
+
+app.run(debug=True)
