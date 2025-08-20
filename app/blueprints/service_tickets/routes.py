@@ -9,6 +9,7 @@ from marshmallow import ValidationError
 
 #Create service ticket
 @service_tickets_bp.route('', methods=['POST'])
+@limiter.limit("20 per hour")
 def create_service_ticket():
     try:
         data = service_ticket_schema.load(request.json)
@@ -22,8 +23,10 @@ def create_service_ticket():
     db.session.commit()
     return service_ticket_schema.jsonify(new_service_ticket), 201
 
+
 #Add mechanic to service ticket
 @service_tickets_bp.route('/<int:service_ticket_id>/add-mechanic/<int:mechanic_id>', methods=['PUT'])
+@limiter.limit("10 per hour")
 def add_mechanic(service_ticket_id, mechanic_id):
     service_ticket = db.session.get(Service_tickets, service_ticket_id)
     mechanic = db.session.get(Mechanics, mechanic_id)
@@ -40,8 +43,9 @@ def add_mechanic(service_ticket_id, mechanic_id):
     return jsonify("This mechanic is already assigned to this service ticket"), 400
 
 
-#Remove mechanic to service ticket
+#Remove mechanic from service ticket
 @service_tickets_bp.route('/<int:service_ticket_id>/remove-mechanic/<int:mechanic_id>', methods=['PUT'])
+@limiter.limit("10 per hour")
 def remove_mechanic(service_ticket_id, mechanic_id):
     service_ticket = db.session.get(Service_tickets, service_ticket_id)
     mechanic = db.session.get(Mechanics, mechanic_id)
@@ -60,9 +64,11 @@ def remove_mechanic(service_ticket_id, mechanic_id):
 
 #View individual service ticket
 @service_tickets_bp.route('/<int:service_ticket_id>', methods=['GET'])
+@limiter.limit("10 per hour")
 def read_service_ticket(service_ticket_id):
     service_ticket = db.session.get(Service_tickets, service_ticket_id)
     return service_ticket_schema.jsonify(service_ticket), 200
+
 
 #View all service tickets
 @service_tickets_bp.route('', methods=['GET'])
@@ -70,8 +76,10 @@ def read_service_tickets():
     service_tickets = db.session.query(Service_tickets).all()
     return service_tickets_schema.jsonify(service_tickets), 200
 
+
 #Delete service ticket
 @service_tickets_bp.route('/<int:service_ticket_id>', methods=['DELETE'])
+@limiter.limit("2 per hour")
 def delete_service_ticket(service_ticket_id):
     service_ticket = db.session.get(Service_tickets, service_ticket_id)
     db.session.delete(service_ticket)
@@ -81,6 +89,7 @@ def delete_service_ticket(service_ticket_id):
 
 #Update service ticket
 @service_tickets_bp.route('/<int:service_ticket_id>', methods=['PUT'])
+@limiter.limit("15 per hour")
 def update_service_ticket(service_ticket_id):
     service_ticket = db.session.get(Service_tickets, service_ticket_id)
     if not service_ticket:

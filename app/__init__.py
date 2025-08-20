@@ -14,7 +14,10 @@ def create_app(config_name): #Defines a factory function >> creates and returns 
 
     db.init_app(app)
     ma.init_app(app)
+    limiter.init_app(app)
+    cache.init_app(app)
 
+    
     #register blueprints
     app.register_blueprint(customers_bp, url_prefix='/customers')
     app.register_blueprint(mechanics_bp, url_prefix='/mechanics')
