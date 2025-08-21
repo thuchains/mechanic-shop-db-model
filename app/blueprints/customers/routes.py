@@ -5,6 +5,7 @@ from app.blueprints.customers import customers_bp
 from .schemas import customer_schema, customers_schema
 from marshmallow import ValidationError 
 
+
 #Create customer
 @customers_bp.route('', methods=['POST'])
 @limiter.limit("5 per day")
@@ -66,3 +67,11 @@ def update_customers(customer_id):
 
     db.session.commit()
     return customer_schema.jsonify(customer), 200
+
+#Search
+@customers_bp.route('/search', methods=['GET'])
+def search_customer():
+    
+    email = request.args.get('email')
+    customers = db.session.query(Customers).where(Customers.first_name.ilike(f"%{email}%")).all()
+    return customers_schema.jsonify(customers), 200

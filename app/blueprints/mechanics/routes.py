@@ -39,8 +39,8 @@ def create_mechanic():
     except ValidationError as e:
         return jsonify(e.messages), 400
     
-    print("------------- Translated Data ---------------")
-    print(data)
+    data['password'] = generate_password_hash(data['password'])
+    
     new_mechanic = Mechanics(**data)
     db.session.add(new_mechanic)
     db.session.commit()
@@ -50,7 +50,6 @@ def create_mechanic():
 #View individual mechanic
 @mechanics_bp.route('/<int:mechanic_id>', methods=['GET'])
 @limiter.limit("10 per hour")
-@cache.cached(timeout=20)
 def read_mechanic(mechanic_id):
     mechanic = db.session.get(Mechanics, mechanic_id)
     return mechanic_schema.jsonify(mechanic), 200
@@ -67,6 +66,7 @@ def read_mechanics():
 #Delete mechanic
 @mechanics_bp.route('/<int:mechanic_id>', methods=['DELETE'])
 @limiter.limit("5 per day")
+@token_required
 def delete_mechanic(mechanic_id):
     mechanic = db.session.get(Mechanics, mechanic_id)
     db.session.delete(mechanic)
