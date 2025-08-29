@@ -6,15 +6,17 @@ from flask import request, jsonify
 
 SECRET_KEY = '__secret_key__'
 
-def encode_token(mechanic_id):
+def encode_token(user_id: int, exp_minutes: int=15):
     payload = {
-        'exp': datetime.now(timezone.utc) + timedelta(days=0, hours=0, minutes=20),
+        'exp': datetime.now(timezone.utc) + timedelta(minutes=20),
         'iat': datetime.now(timezone.utc),
-        'sub': str(mechanic_id)
+        'sub': str(user_id)
     }
 
-    token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+    token = jwt.encode(payload, SECRET_KEY, algorithm=['HS256'])
+   
     return token
+
 
 def token_required(f):
     @wraps(f)
@@ -22,7 +24,7 @@ def token_required(f):
 
         token = None
 
-        if 'Authroization' in request.headers:
+        if 'Authorization' in request.headers:
             token = request.headers['Authorization'].split()[1]
 
         if not token:
@@ -34,9 +36,9 @@ def token_required(f):
             request.mechanic_id = int(data['sub'])
 
         except jose.exceptions.ExpiredSignatureError:
-            return jsonify({"message": "token is expired"}), 403
+            return jsonify({"message": "token is expired"}), 401
         except jose.exceptions.JWTError:
-            return jsonify({"message": "invalid token"}), 403
+            return jsonify({"message": "invalid token"}), 401
         
         return f(*args, **kwargs) 
     

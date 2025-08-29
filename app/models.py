@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from sqlalchemy import String, Date, Float, Integer, ForeignKey, DateTime, Table, Column
+from sqlalchemy import String, Float, Integer, ForeignKey, DateTime, Table, Column
 from datetime import datetime
 
 
@@ -27,6 +27,7 @@ class Customers(Base):
     first_name: Mapped[str] = mapped_column(String(120), nullable=False)
     last_name: Mapped[str] = mapped_column(String(120), nullable=False)
     email: Mapped[str] = mapped_column(String(200), nullable=False, unique=True)
+    password: Mapped[str] = mapped_column(String(150), nullable=False  )
     phone: Mapped[str] = mapped_column(String(15), nullable=False, unique=True)
     address: Mapped[str] = mapped_column(String(200), nullable=False)
 
@@ -55,14 +56,18 @@ class Service_tickets(Base):
     
     mechanics = relationship("Mechanics", secondary=ticket_mechanics, back_populates="service_tickets")
     customer: Mapped['Customers'] = relationship('Customers')
+    inventories = relationship("Inventory", back_populates="service_tickets")
     
+class Inventory(Base):
+    __tablename__ = 'inventory'
 
-# class Ticket_mechanics(Base):
-#     __tablename__ = 'ticket_mechanics'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    part_name: Mapped[str] = mapped_column(String(150), nullable=False)
+    price: Mapped[float] = mapped_column(Float)
 
-#     id: Mapped[int] = mapped_column(primary_key=True)
-#     ticket_id: Mapped[int] = mapped_column(Integer, ForeignKey('service_tickets.id'), nullable=False)
-#     mechanic_id: Mapped[int] = mapped_column(Integer, ForeignKey('mechanics.id'), nullable=False)
+    service_tickets = relationship("Service_tickets", back_populates="inventory")
 
-#     service_ticket: Mapped['Service_tickets'] = relationship('Service_tickets', back_populates='ticket_mechanics')
-#     mechanics: Mapped['Mechanics'] = relationship('Mechanics', back_populates='ticket_mechanics')
+
+
+
+    

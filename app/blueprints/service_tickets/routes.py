@@ -35,7 +35,7 @@ def add_mechanic(service_ticket_id, mechanic_id):
         service_ticket.mechanics.append(mechanic)
         db.session.commit()
         return jsonify({
-            "Message": f"Successfully added {mechanic.first_name} to service ticket",
+            "message": f"Successfully added {mechanic.first_name} to service ticket",
             "Service ticket": service_ticket_schema.dump(service_ticket), #use dump when schema is adding just a piece of return message
             "Mechanics": mechanics_schema.dump(service_ticket.mechanics) 
         }), 200
@@ -54,7 +54,7 @@ def remove_mechanic(service_ticket_id, mechanic_id):
         service_ticket.mechanics.remove(mechanic)
         db.session.commit()
         return jsonify({
-            "Message": f"Successfully removed {mechanic.first_name} from service ticket",
+            "message": f"Successfully removed {mechanic.first_name} from service ticket",
             "Service ticket": service_ticket_schema.dump(service_ticket), #use dump when schema is adding just a piece of return message
             "Mechanics": mechanics_schema.dump(service_ticket.mechanics) 
         }), 200
@@ -84,7 +84,7 @@ def delete_service_ticket(service_ticket_id):
     service_ticket = db.session.get(Service_tickets, service_ticket_id)
     db.session.delete(service_ticket)
     db.session.commit()
-    return jsonify({"Message": f"Successfully deleted service ticket {service_ticket_id}"}), 200
+    return jsonify({"message": f"Successfully deleted service ticket {service_ticket_id}"}), 200
 
 
 #Update service ticket
@@ -93,11 +93,11 @@ def delete_service_ticket(service_ticket_id):
 def update_service_ticket(service_ticket_id):
     service_ticket = db.session.get(Service_tickets, service_ticket_id)
     if not service_ticket:
-        return jsonify({"Message": "Service ticket not found"}), 400
+        return jsonify({"message": "Service ticket not found"}), 400
     try:
         service_ticket_data = service_ticket_schema.load()
     except ValidationError as e:
-        return jsonify({"Message": e.messages}), 400
+        return jsonify({"message": e.messages}), 400
     
     for key, value in service_ticket_data.items():
         setattr(service_ticket, key, value)

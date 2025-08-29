@@ -2,11 +2,10 @@ from flask import request, jsonify
 from app.models import db, Mechanics
 from app.extensions import limiter, cache
 from app.blueprints.mechanics import mechanics_bp
-from . schemas import mechanic_schema, mechanics_schema, login_schema
+from . schemas import mechanic_schema, mechanics_schema, mechanic_login_schema
 from marshmallow import ValidationError 
 from app.util.auth import encode_token, token_required
 from werkzeug.security import generate_password_hash, check_password_hash
-
 
 
 #Login
@@ -14,7 +13,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 @limiter.limit("50 per hour")
 def login():
     try: 
-        data = login_schema.load(request.json)
+        data = mechanic_login_schema.load(request.json)
     except ValidationError as e:
         return jsonify(e.messages), 400
     
@@ -23,7 +22,7 @@ def login():
     if mechanic and check_password_hash(mechanic.password, data['password']):
         token = encode_token(mechanic.id)
         return jsonify({
-            "Message": f"Welcome {mechanic.first_name} {mechanic.last_name}",
+            "message": f"Welcome {mechanic.first_name} {mechanic.last_name}",
             "token": token
         }), 200
     
@@ -67,28 +66,55 @@ def read_mechanics():
 @mechanics_bp.route('/<int:mechanic_id>', methods=['DELETE'])
 @limiter.limit("5 per day")
 @token_required
-def delete_mechanic(mechanic_id):
-    mechanic = db.session.get(Mechanics, mechanic_id)
+def delete_mechanic():
+    token_id = request.mechanic_id
+
+    mechanic = db.session.get(Mechanics, token_id)
     db.session.delete(mechanic)
     db.commit()
-    return jsonify({"Message": f"Successfully deleted mechanic {mechanic_id}"}), 200
+    return jsonify({"message": f"Successfully deleted mechanic {token_id}"}), 200
 
 
 #Update mechanic
 @mechanics_bp.route('/<int:mechanic_id>', methods=["PUT"])
 @limiter.limit("5 per hour")
+@token_required
 def update_mechanic(mechanic_id):
     mechanic = db.session.get(Mechanics, mechanic_id)
     if not mechanic:
-        return jsonify({"Message": "Mechanic not found"}), 404
+        return jsonify({"message": "Mechanic not found"}), 404
     
     try:
         mechanic_data = mechanic_schema.load()
     except ValidationError as e:
-        return jsonify({"Message": e.messages}), 400
+        return jsonify({"message": e.messages}), 400
+    
+    mechanic_data['password'] = generate_password_hash(mechanic_data['password'])
+
     
     for key, value in mechanic_data.items():
         setattr(mechanic, key, value)
 
     db.session.commit()
     return mechanic_schema.jsonify(mechanic), 200
+
+#Get popular mechanics
+@mechanics_bp.route('/popularity', methods=['GET'])
+def get_popular_mechanics():
+    mechanics = db.session.query(Mechanics).all()
+    mechanics.sort(key=lambda mechanic:len(mechanic.service_tickets), reverse=True)
+
+    output = []
+    for mechanic in mechanics[:10]:
+        mechanic_format = {
+            "first name": mechanic_schema.dump(mechanic.first_name),
+            "last name": mechanic_schema.dump(mechanic.last_name)
+        }
+        output.append(mechanic_format)
+
+    return jsonify(output)
+
+#Get service tickets related to mechanic
+@mechanics_bp.route('/my-tickets', methods=['GET'])
+@token_required
+def 

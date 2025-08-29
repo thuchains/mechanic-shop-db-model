@@ -2,9 +2,30 @@ from flask import request, jsonify
 from app.models import db, Customers
 from app.extensions import limiter, cache
 from app.blueprints.customers import customers_bp
-from .schemas import customer_schema, customers_schema
+from .schemas import customer_schema, customers_schema, customer_login_schema
 from marshmallow import ValidationError 
+from app.util.auth import encode_token, token_required
+from werkzeug.security import generate_password_hash, check_password_hash
 
+
+#Login
+@customers_bp.route('/login', methods=['POST'])
+def customer_login():
+    try:
+        data = customer_login_schema.load(request.json)
+    except ValidationError as e:
+        return jsonify(e.messages), 400
+    
+    customer = db.session.query(Customers).where(Customers.email==data['email']).first()
+
+    if customer and check_password_hash(customer.password, data['password']):
+        token = encode_token(customer.id)
+        return jsonify({
+            "message": f"Welcome {customer.first_name} {customer.last_name}",
+            "token": token
+        }), 200
+    
+    return jsonify("Invalid email or password"), 403
 
 #Create customer
 @customers_bp.route('', methods=['POST'])
@@ -46,7 +67,7 @@ def delete_customer(customer_id):
     customer = db.session.get(Customers, customer_id)
     db.session.delete(customer)
     db.session.commit()
-    return jsonify({"Message": f"Successfully deleted customer {customer_id}"}), 200
+    return jsonify({"message": f"Successfully deleted customer {customer_id}"}), 200
 
 
 #Update customer
@@ -55,12 +76,12 @@ def delete_customer(customer_id):
 def update_customers(customer_id):
     customer = db.session.get(Customers, customer_id)
     if not customer:
-        return jsonify({"Message": "Customer not found"}), 404
+        return jsonify({"message": "Customer not found"}), 404
     
     try:
         customer_data = customer_schema.load()
     except ValidationError as e:
-        return jsonify({"Message": e.messages}), 400
+        return jsonify({"message": e.messages}), 400
     
     for key, value in customer_data.items():
         setattr(customer, key, value)
