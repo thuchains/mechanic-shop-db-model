@@ -5,8 +5,14 @@ from .extensions import ma, limiter, cache
 from .blueprints.customers import customers_bp
 from .blueprints.mechanics import mechanics_bp
 from .blueprints.service_tickets import service_tickets_bp
+from .blueprints.parts import parts_bp
+from flask_swagger_ui import get_swaggerui_blueprint
 
 
+SWAGGER_URL = '/api/docs'
+API_URL = '/static/swagger.yaml'
+
+swagger_blueprint = get_swaggerui_blueprint(SWAGGER_URL, API_URL, config={'app_name': 'Mechanic Shop Management API'})
 
 def create_app(config_name): #Defines a factory function >> creates and returns a Flask app
     app = Flask(__name__) #Creates Flask app instance
@@ -17,14 +23,12 @@ def create_app(config_name): #Defines a factory function >> creates and returns 
     limiter.init_app(app)
     cache.init_app(app)
 
-    
+
     #register blueprints
     app.register_blueprint(customers_bp, url_prefix='/customers')
     app.register_blueprint(mechanics_bp, url_prefix='/mechanics')
     app.register_blueprint(service_tickets_bp, url_prefix='/service_tickets')
-
-    limiter.init_app(app)
-    cache.init_app(app)
-
+    app.register_blueprint(parts_bp, url_prefix='/parts')
+    app.register_blueprint(swagger_blueprint, url_prefix = SWAGGER_URL)
 
     return app

@@ -6,6 +6,7 @@ from . schemas import mechanic_schema, mechanics_schema, mechanic_login_schema
 from marshmallow import ValidationError 
 from app.util.auth import encode_token, token_required
 from werkzeug.security import generate_password_hash, check_password_hash
+from app.blueprints.service_tickets.schemas import service_tickets_schema
 
 
 #Login
@@ -105,7 +106,7 @@ def get_popular_mechanics():
     mechanics.sort(key=lambda mechanic:len(mechanic.service_tickets), reverse=True)
 
     output = []
-    for mechanic in mechanics[:10]:
+    for mechanic in mechanics:
         mechanic_format = {
             "first name": mechanic_schema.dump(mechanic.first_name),
             "last name": mechanic_schema.dump(mechanic.last_name)
@@ -117,4 +118,13 @@ def get_popular_mechanics():
 #Get service tickets related to mechanic
 @mechanics_bp.route('/my-tickets', methods=['GET'])
 @token_required
-def 
+def get_related_tickets():
+    token_id = request.mechanic_id
+    mechanic = db.session.get(Mechanics, token_id)
+    if not mechanic:
+        return jsonify({"message": "Mechanic not found"}), 404
+    
+    tickets = mechanic.service_tickets
+    tickets.sort(key=lambda ticket: ticket.service_date, reverse=True)
+    return service_tickets_schema.jsonify(tickets), 200
+    

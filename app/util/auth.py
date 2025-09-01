@@ -6,14 +6,14 @@ from flask import request, jsonify
 
 SECRET_KEY = '__secret_key__'
 
-def encode_token(user_id: int, exp_minutes: int=15):
+def encode_token(mechanic_id: int):
     payload = {
         'exp': datetime.now(timezone.utc) + timedelta(minutes=20),
         'iat': datetime.now(timezone.utc),
-        'sub': str(user_id)
+        'sub': str(mechanic_id)
     }
 
-    token = jwt.encode(payload, SECRET_KEY, algorithm=['HS256'])
+    token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
    
     return token
 
@@ -24,12 +24,11 @@ def token_required(f):
 
         token = None
 
-        if 'Authorization' in request.headers:
-            token = request.headers['Authorization'].split()[1]
+        auth = request.headers.get("Authorization", "")
+        if not auth.startswith("Bearer "):
+            return jsonify({"message": "Missing or invalid Authorization header"})
+        token = auth.split(" ", 1)[1]
 
-        if not token:
-            return jsonify({"Error": "Token missing from authorization headers"}), 401
-        
         try:
             data = jwt.decode(token, SECRET_KEY, algorithms='HS256')
             print(data)

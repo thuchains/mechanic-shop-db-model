@@ -35,12 +35,15 @@ def create_customer():
         data = customer_schema.load(request.json)
     except ValidationError as e:
         return jsonify(e.messages), 400
+
+
+    try: 
+        new_customer = Customers(**data)
+        db.session.add(new_customer)
+        db.session.commit()
+    except:
+        return jsonify({"message": "email already taken"}), 400
     
-    print("------------- Translated Data ---------------")
-    print(data)
-    new_customer = Customers(**data)
-    db.session.add(new_customer)
-    db.session.commit()
     return customer_schema.jsonify(new_customer), 201
 
 
@@ -56,8 +59,18 @@ def read_customer(customer_id):
 #View all customers
 @customers_bp.route('', methods=['GET'])
 def read_customers():
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+    query = db.session.query(Customers)
+    paged = query.paginate(page=page, per_page=per_page)
     customers = db.session.query(Customers).all()
-    return customers_schema.jsonify(customers), 200
+    return jsonify({
+        "items": customer_schema.dump(paged.items),
+        "page": page,
+        "per_page": per_page,
+        "total": paged.total,
+        "pages": paged.pages
+    }), 200
 
 
 #Delete customer
