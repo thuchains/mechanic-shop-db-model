@@ -48,6 +48,44 @@
 					]
 				},
 				{
+					"name": "Get a Service Ticket",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/service_tickets/<int:service_ticket_id>",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"service_tickets",
+								"<int:service_ticket_id>"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Customer",
+							"originalRequest": {
+								"method": "GET",
+								"header": []
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
 					"name": "Get Service Tickets",
 					"request": {
 						"auth": {
@@ -141,6 +179,126 @@
 							"port": "5000",
 							"path": [
 								"service_tickets"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Customer",
+							"originalRequest": {
+								"method": "GET",
+								"header": []
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "Add Mechanic to Service Ticket",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/service_tickets/<int:service_ticket_id>/add-mechanic/<int:mechanic_id>",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"service_tickets",
+								"<int:service_ticket_id>",
+								"add-mechanic",
+								"<int:mechanic_id>"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Customer",
+							"originalRequest": {
+								"method": "GET",
+								"header": []
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "Remove Mechanic to Service Ticket",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/service_tickets/<int:service_ticket_id>/remove-mechanic/<int:mechanic_id>",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"service_tickets",
+								"<int:service_ticket_id>",
+								"remove-mechanic",
+								"<int:mechanic_id>"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Customer",
+							"originalRequest": {
+								"method": "GET",
+								"header": []
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "Add Part to a Service Ticket",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/service_tickets/<int:service_ticket_id>/add-part/<int:part_description_id>",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"service_tickets",
+								"<int:service_ticket_id>",
+								"add-part",
+								"<int:part_description_id>"
 							]
 						}
 					},

@@ -67,12 +67,12 @@ def read_mechanics():
 @mechanics_bp.route('/<int:mechanic_id>', methods=['DELETE'])
 @limiter.limit("5 per day")
 @token_required
-def delete_mechanic():
+def delete_mechanic(mechanic_id):
     token_id = request.mechanic_id
 
     mechanic = db.session.get(Mechanics, token_id)
     db.session.delete(mechanic)
-    db.commit()
+    db.session.commit()
     return jsonify({"message": f"Successfully deleted mechanic {token_id}"}), 200
 
 
@@ -86,7 +86,7 @@ def update_mechanic(mechanic_id):
         return jsonify({"message": "Mechanic not found"}), 404
     
     try:
-        mechanic_data = mechanic_schema.load()
+        mechanic_data = mechanic_schema.load(request.json)
     except ValidationError as e:
         return jsonify({"message": e.messages}), 400
     
