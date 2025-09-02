@@ -34,7 +34,6 @@ class Customers(Base):
     first_name: Mapped[str] = mapped_column(String(120), nullable=False)
     last_name: Mapped[str] = mapped_column(String(120), nullable=False)
     email: Mapped[str] = mapped_column(String(200), nullable=False, unique=True)
-    password: Mapped[str] = mapped_column(String(150), nullable=False  )
     phone: Mapped[str] = mapped_column(String(15), nullable=False, unique=True)
     address: Mapped[str] = mapped_column(String(200), nullable=False)
 
@@ -49,7 +48,7 @@ class Mechanics(Base):
     salary: Mapped[float] = mapped_column(Float, nullable=False)
     address: Mapped[str] = mapped_column(String(200), nullable=False)
 
-    service_tickets: Mapped[list['ServiceTickets']] = relationship("ServiceTickets", back_populates="mechanics")
+    service_tickets: Mapped[list['ServiceTickets']] = relationship("ServiceTickets", secondary=ticket_mechanics, back_populates="mechanics")
 
 class ServiceTickets(Base):
     __tablename__ = 'service_tickets'

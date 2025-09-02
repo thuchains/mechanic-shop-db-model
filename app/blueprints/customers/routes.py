@@ -8,24 +8,24 @@ from app.util.auth import encode_token, token_required
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
-#Login
-@customers_bp.route('/login', methods=['POST'])
-def customer_login():
-    try:
-        data = customer_login_schema.load(request.json)
-    except ValidationError as e:
-        return jsonify(e.messages), 400
+# #Login
+# @customers_bp.route('/login', methods=['POST'])
+# def customer_login():
+#     try:
+#         data = customer_login_schema.load(request.json)
+#     except ValidationError as e:
+#         return jsonify(e.messages), 400
     
-    customer = db.session.query(Customers).where(Customers.email==data['email']).first()
+#     customer = db.session.query(Customers).where(Customers.email==data['email']).first()
 
-    if customer and check_password_hash(customer.password, data['password']):
-        token = encode_token(customer.id)
-        return jsonify({
-            "message": f"Welcome {customer.first_name} {customer.last_name}",
-            "token": token
-        }), 200
+#     if customer and check_password_hash(customer.password, data['password']):
+#         token = encode_token(customer.id)
+#         return jsonify({
+#             "message": f"Welcome {customer.first_name} {customer.last_name}",
+#             "token": token
+#         }), 200
     
-    return jsonify("Invalid email or password"), 403
+#     return jsonify("Invalid email or password"), 403
 
 #Create customer
 @customers_bp.route('', methods=['POST'])
@@ -35,8 +35,8 @@ def create_customer():
         data = customer_schema.load(request.json)
     except ValidationError as e:
         return jsonify(e.messages), 400
-
-
+    
+         
     try: 
         new_customer = Customers(**data)
         db.session.add(new_customer)
@@ -59,18 +59,8 @@ def read_customer(customer_id):
 #View all customers
 @customers_bp.route('', methods=['GET'])
 def read_customers():
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 10, type=int)
-    query = db.session.query(Customers)
-    paged = query.paginate(page=page, per_page=per_page)
     customers = db.session.query(Customers).all()
-    return jsonify({
-        "items": customer_schema.dump(paged.items),
-        "page": page,
-        "per_page": per_page,
-        "total": paged.total,
-        "pages": paged.pages
-    }), 200
+    return customers_schema.jsonify(customers), 200
 
 
 #Delete customer
@@ -85,7 +75,7 @@ def delete_customer(customer_id):
 
 #Update customer
 @customers_bp.route('/<int:customer_id>', methods=['PUT'])
-@limiter.limit("3 per month")
+@limiter.limit("2 per day")
 def update_customers(customer_id):
     customer = db.session.get(Customers, customer_id)
     if not customer:
