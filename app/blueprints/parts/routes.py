@@ -6,7 +6,7 @@ from app.blueprints.parts.schemas import part_schema, parts_schema, part_descrip
 from marshmallow import ValidationError
 
 
-#Create Parts
+#Create Parts 
 @parts_bp.route('/<int:description_id>', methods=['POST'])
 @limiter.limit ("20 per hour")
 def create_part(description_id):
@@ -52,7 +52,7 @@ def delete_part(part_id):
 
 
 #Update part 
-@parts_bp.route('/description/<int:part_description_id>', methods=['PUT'])
+@parts_bp.route('/descriptions/<int:part_description_id>', methods=['PUT'])
 @limiter.limit("10 per hour")
 def update_part(part_description_id):
     part_desc = db.session.get(PartDescriptions, part_description_id)
@@ -90,7 +90,7 @@ def create_part_description():
 
 
 #View part description for a part
-@parts_bp.route('/<int:part_id>/description', methods=['GET'])
+@parts_bp.route('/<int:part_id>/descriptions', methods=['GET'])
 def read_part_description(part_id):
     part = db.session.get(Parts, part_id)
     if not part:
@@ -108,7 +108,7 @@ def read_part_descriptions():
     return part_descriptions_schema.jsonify(part_descriptions), 200
 
 #Delete part description
-@parts_bp.route('/description/<int:part_description_id>', methods=['DELETE'])
+@parts_bp.route('/descriptions/<int:part_description_id>', methods=['DELETE'])
 @limiter.limit("10 per hour")
 def delete_part_description(part_description_id):
     part_description = db.session.get(PartDescriptions, part_description_id)

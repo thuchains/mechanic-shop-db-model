@@ -1015,7 +1015,7 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:5000/parts/description/<int:part_description_id>",
+							"raw": "http://127.0.0.1:5000/parts/descriptions/<int:part_description_id>",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1026,7 +1026,7 @@
 							"port": "5000",
 							"path": [
 								"parts",
-								"description",
+								"descriptions",
 								"<int:part_description_id>"
 							]
 						}
@@ -1092,7 +1092,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:5000/parts/<int:part_id>/description",
+							"raw": "http://127.0.0.1:5000/parts/<int:part_id>/descriptions",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1104,7 +1104,7 @@
 							"path": [
 								"parts",
 								"<int:part_id>",
-								"description"
+								"descriptions"
 							]
 						}
 					},
@@ -1169,7 +1169,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:5000/parts/description",
+							"raw": "http://127.0.0.1:5000/parts/descriptions",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1180,7 +1180,7 @@
 							"port": "5000",
 							"path": [
 								"parts",
-								"description"
+								"descriptions"
 							]
 						}
 					},

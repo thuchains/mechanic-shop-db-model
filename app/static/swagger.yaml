@@ -78,11 +78,31 @@ paths: #Information about our routes
         - Mechanics
       summary: "Returns all Mechanics"
       description: "Endpoint to recieve an array of mechanic objects."
+
       responses:
         200:
           description: "Successfully Retrieved Mechanics"
           schema:
             $ref: "#/definitions/MechanicsResponse"
+
+  /mechanics/{mechanic_id}:
+    get: #View individual mechanic
+      tags:
+        - Mechanics
+      summary: "Get a single mechanic"
+      parameters:
+        - in: "path"
+          name: "mechanic_id"
+          type: "integer"
+          required: true
+          schema:
+            $ref: "#/definitions/MechanicInput"
+
+      responses:
+        200:
+          description: "Successfully Retreived Mechanic"
+          schema:
+            $ref: "#/definitions/MechanicResponse"
 
     put: #Update a Mechanic
       tags:
@@ -97,11 +117,11 @@ paths: #Information about our routes
           description: "Mechanic Updates"
           required: true
           schema:
-            $ref: "#/definitions/MechanicInput" 
+            $ref: "#/definitions/MechanicUpdate" 
           
       responses:
         200:
-          description: "Creation Successful"
+          description: "Update Successful"
           schema:
             $ref: "#/definitions/MechanicResponse"
           examples:
@@ -121,13 +141,36 @@ paths: #Information about our routes
       description: "Delete a mechanic, requires a token, token will be used to identify mechanic to delete."
       security:
         - bearerAuth: []
+
       responses:
         200:
+          description: "Deleted Mechanic"
           schema:
             type: object
             properties:
               message:
                 type: string
+
+  /mechanics/my-tickets:
+    get: 
+      tags:
+        - Mechanics
+      summary: "Get tickets related to the authenticated mechanic"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Get a Mechanic's Service Tickets"
+          required: true
+          schema:
+            $ref: "#/definitions/ServiceTicketInput"
+
+      responses:
+        200:
+          description: "Successfully Retreived Service Tickets of Mechanic"
+          schema:
+            $ref: "#/definitions/ServiceTicketResponse"
 
   /customers:
     post: #Create Customer Endpoint
@@ -162,11 +205,31 @@ paths: #Information about our routes
         - Customers
       summary: "Returns all Customers"
       description: "Endpoint to recieve an array of customers objects."
+
       responses:
         200:
           description: "Successfully Retrieved Customers"
           schema:
             $ref: "#/definitions/CustomersResponse"
+
+  /customers/{customer_id}:
+    get: #View individual Customer
+      tags:
+        - Customers
+      summary: "Get a single customer"
+      parameters:
+        - in: "path"
+          name: "customer_id"
+          type: "integer"
+          required: true
+          schema:
+            $ref: "#/definitions/CustomerInput"
+
+      responses:
+        200:
+          description: "Successfully Retreived Customer"
+          schema:
+            $ref: "#/definitions/CustomerResponse"
 
     put: #Update a Customer
       tags:
@@ -179,11 +242,11 @@ paths: #Information about our routes
           description: "Customer Updates"
           required: true
           schema:
-            $ref: "#/definitions/CustomerInput" 
+            $ref: "#/definitions/CustomerUpdate" 
           
       responses:
         200:
-          description: "Creation Successful"
+          description: "Update Successful"
           schema:
             $ref: "#/definitions/CustomerResponse"
           examples:
@@ -200,8 +263,15 @@ paths: #Information about our routes
         - Customers
       summary: "Delete a Customer"
       description: "Endpoint to delete a customer"
+      parameters:
+        - in: "body"
+          name: "body"
+          type: integer
+          required: true
+
       responses:
         200:
+          description: "Deleted Customer"
           schema:
             type: object
             properties:
@@ -235,12 +305,33 @@ paths: #Information about our routes
               vin: "usa219324b3289re9df3"
               service_date: "1900-01-01"
               id: 1
-    
+
     get: #Get all Service Ticket Endpoint
       tags:
         - ServiceTickets
       summary: "Returns all Service Tickets"
       description: "Endpoint to recieve an array of service tickets objects."
+
+      responses:
+        200:
+          description: "Successfully Retrieved Service Tickets"
+          schema:
+            $ref: "#/definitions/ServiceTicketsResponse"
+
+  /service_tickets/{service_ticket_id}:  
+    get: #Get individual Service Ticket Endpoint
+      tags:
+        - ServiceTickets
+      summary: "Returns a Service Ticket"
+      description: "Endpoint to recieve a service ticket object."
+      parameters:
+        - in: "path"
+          name: "service_ticket_id"
+          type: "integer"
+          required: true
+          schema:
+            $ref: "#/definitions/ServiceTicketInput"
+
       responses:
         200:
           description: "Successfully Retrieved Service Tickets"
@@ -258,11 +349,11 @@ paths: #Information about our routes
           description: "Service Ticket Updates"
           required: true
           schema:
-            $ref: "#/definitions/ServiceTicketInput" 
+            $ref: "#/definitions/ServiceTicketUpdate" 
           
       responses:
         200:
-          description: "Creation Successful"
+          description: "Update Successful"
           schema:
             $ref: "#/definitions/ServiceTicketResponse"
           examples:
@@ -271,7 +362,7 @@ paths: #Information about our routes
               last_name: "Doe"
               address: "123 Fun St."
               email: "test@test.com"
-              phone: "555-555-5556
+              phone: "555-555-5558"
               id: 1
     
     delete: #Delete a Service Ticket
@@ -279,87 +370,269 @@ paths: #Information about our routes
         - ServiceTickets
       summary: "Delete a Service Ticket"
       description: "Endpoint to delete a Service Ticket"
+      parameters:
+        - in: "path"
+          name: "service_ticket_id"
+          type: "integer"
+          required: true
+
       responses:
         200:
+          description: "Deleted Service Ticket"
           schema:
             type: object
             properties:
               message:
                 type: string
 
-  /service_tickets/<int:service_ticket_id>/add-mechanic/<int:mechanic_id>:
+  /service_tickets/{service_ticket_id}/add-mechanic/{mechanic_id}:
     put:
       tags:
         - TicketMechanics
       summary: "Add mechanic to Service Ticket Endpoint"
       description: "Endpoint to add a mechanic to a service ticket through the junction table, Ticket Mechanics"
       parameters:
-        - in: "body"
-          name: "body"
-          description: "Add Ticket Mechanic"
+        - in: "path"
+          name: "service_ticket_id"
+          type: "integer"
           required: true
-          schema:
-            $ref: "#/definitions/TicketMechanicInput" 
+        - in: "path"
+          name: "mechanic_id"
+          type: "integer"
+          required: true
           
       responses:
         200:
-          description: "Mechanic Successful Added"
-          schema:
-            $ref: "#/definitions/TicketMechanicResponse"
+          description: "Mechanic Successfully Added"
           examples:
             application/json:
               mechanic_id: 1
               ticket_id: 1
 
-  /service_tickets/<int:service_ticket_id>/remove-mechanic/<int:mechanic_id>:
+  /service_tickets/{service_ticket_id}/remove-mechanic/{mechanic_id}:
     put:
       tags:
         - TicketMechanics
       summary: "Remove mechanic from Service Ticket Endpoint"
       description: "Endpoint to remove a mechanic from a service ticket through the junction table, Ticket Mechanics"
       parameters:
-        - in: "body"
-          name: "body"
-          description: "Remove Ticket Mechanic"
+        - in: "path"
+          name: "service_ticket_id"
+          type: "integer"
           required: true
-          schema:
-            $ref: "#/definitions/TicketMechanicInput" 
+        - in: "path"
+          name: "mechanic_id"
+          type: "integer"
+          required: true
           
       responses:
         200:
-          description: "Mechanic Successful Removed"
-          schema:
-            $ref: "#/definitions/TicketMechanicResponse"
+          description: "Mechanic Successfully Removed"
           examples:
             application/json:
               mechanic_id: 1
               ticket_id: 1
               
-/service_tickets/<int:service_ticket_id>/add-part/<int:part_description_id>:
+/service_tickets/{service_ticket_id}/add-part/{part_description_id}:
     put:
       tags:
         - ServiceTickets
       summary: "Add Part to Service Ticket Endpoint"
       description: "Endpoint to add a part to a service ticket through the junction table, Parts"
       parameters:
-        - in: "body"
-          name: "body"
-          description: "Add Part to Service Ticket"
+        - in: "path"
+          name: "service_ticket_id"
+          type: "integer"
           required: true
-          schema:
-            $ref: "#/definitions/PartsInput" 
+        - in: "path"
+          name: "part_description_id"
+          type: "integer"
+          required: true 
           
       responses:
         200:
           description: "Part Successful Added"
-          schema:
-            $ref: "#/definitions/PartsResponse"
           examples:
             application/json:
               desc_id: 1
               ticket_id: 1
 
-              
+  /parts/{description_id}:
+    post: #Create Part Endpoint
+      tags:
+        - Parts
+      summary: "Create Parts (one or more) from a Part Description id"
+      description: "Creates one or more Part rows for the given Part Description, quantity set via query param 'qty' (default=1)."
+      parameters:
+        - in: "path"
+          name: "description_id"
+          type: "integer"
+          required: true 
+        - in: "body"
+          name: "body"
+          description: "New Part Information"
+          required: true
+          
+      responses:
+        201:
+          description: "Creation Successful"
+          examples:
+            application/json:
+              desc_id: 1
+              ticket_id: 1
+              id: 1
+
+  /parts:  
+    get: #Get all Parts Endpoint
+      tags:
+        - Parts
+      summary: "Returns all Parts"
+      description: "Endpoint to recieve an array of parts objects."
+      
+      responses:
+        200:
+          description: "Successfully Retrieved Parts"
+          schema:
+            $ref: "#/definitions/PartsResponse"
+
+  /parts/{part_id}:  
+    get: #Get a Part Endpoint
+      tags:
+        - Parts
+      summary: "Return a single Part"
+      description: "Endpoint to recieve a single part object."
+      parameters:
+        - in: "path"
+          name: "part_id"
+          type: "integer"
+          required: true 
+
+      responses:
+        200:
+          description: "Successfully Retrieved Part"
+          schema:
+            $ref: "#/definitions/PartResponse"
+
+    delete: #Delete a Part
+      tags:
+        - Parts
+      summary: "Delete a part"
+      description: "Endpoint to delete a part"
+      parameters:
+        - in: "path"
+          name: "part_id"
+          type: "integer"
+          required: true 
+
+      responses:
+        200:
+          description: "Successfully Deleted Part"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+
+  /parts/{part_id}/descriptions:
+    get:
+      tags:
+        - Parts
+      summary: "View Part Description for a Part"
+      description: "Endpoint to view Part Description info for a part"
+      parameters:
+        - in: "path"
+          name: "part_id"
+          type: "integer"
+          required: true
+
+      responses:
+        200:
+          description: "Successfully Retreived Part Description"
+          schema:
+            $ref: "#/definitions/PartDescriptionResponse"
+
+    put: #Update a Part Description
+      tags:
+        - PartDescriptions
+      summary: "Update Part Description Endpoint"
+      description: "Endpoint to update a Part Description"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Part Description Updates"
+          required: true
+          schema:
+            $ref: "#/definitions/PartDescriptionUpdate" 
+          
+      responses:
+        200:
+          description: "Creation Successful"
+          schema:
+            $ref: "#/definitions/PartDescriptionResponse"
+          examples:
+            application/json:
+              part_name: "Honda oil filter"
+              price: 24.99
+              id: 1
+
+  /parts/descriptions:
+    post: #Create Part Description Endpoint
+      tags:
+        - PartDescriptions
+      summary: "Create Part Description"
+      description: "Send in part description info, to create a part description profile that will be stored in the database."
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "New Part Description Information"
+          required: true
+          schema:
+            $ref: "#/definitions/PartDescriptionInput"
+          
+      responses:
+        201:
+          description: "Creation Successful"
+          schema:
+            $ref: "#/definitions/PartDescriptionResponse"
+          examples:
+            application/json:
+              part_name: "K&N oil filter"
+              price: 24.99
+              id: 1
+
+    get:
+      tags:
+        - Parts
+      summary: "View all Part Descriptions"
+      description: "Endpoint to view all Part Descriptions"
+
+      responses:
+        200:
+          description: "Successfully Retreived all Part Descriptions"
+          schema:
+            $ref: "#/definitions/PartDescriptionsResponse"
+
+  /parts/descriptions/{part_description_id}:
+    delete: #Delete a Part Description
+      tags:
+        - PartDescriptions
+      summary: "Delete a Part Description"
+      description: "Endpoint to delete a Part Description"
+      parameters:
+        - in: "path"
+          name: "part_description_id"
+          type: "integer"
+          required: true
+
+      responses:
+        200:
+          description: "Successful Deleted Part Description"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+
 
 
 definitions: #Information about the shape of input and output json
@@ -414,9 +687,27 @@ definitions: #Information about the shape of input and output json
       - salary
       - address
 
+  MechanicUpdate:
+    type: object
+    properties:
+      first_name:
+        type: string
+      last_name:
+        type: string
+      address:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      salary:
+        type: float
+
   MechanicResponse: #Recieve Single Mechanic Profile
     type: object
     properties:
+      id: 
+        type: integer
       first_name:
         type: string
       last_name:
@@ -470,14 +761,30 @@ definitions: #Information about the shape of input and output json
 
     required:
       - email
-      - password
       - first_name
       - last_name
       - phone
+      - address
+
+  CustomerUpdate: #Update Customer Profile
+    type: object
+    properties:
+      first_name:
+        type: string
+      last_name:
+        type: string
+      address:
+        type: string
+      email:
+        type: string
+      phone:
+        type: string
 
   CustomerResponse: #Recieve Single Customer Profile
     type: object
     properties:
+      id:
+        type: integer
       first_name:
         type: string
       last_name:
@@ -494,6 +801,7 @@ definitions: #Information about the shape of input and output json
     items:
       type: object
       properties:
+        id: integer
         first_name:
           type: string
         last_name:
@@ -505,3 +813,158 @@ definitions: #Information about the shape of input and output json
         phone:
         type: string
           
+  ServiceTicketInput:
+    type: object
+    properties:
+      customer_id:
+        type: integer
+        example: 1
+      service_desc:
+        type: string
+        example: "Oil change"
+      price:
+        type: float
+        example: 125.75
+      vin:
+        type: string
+        example: "1HGCM82633A004352"
+      service_date:
+        type: datetime
+
+
+    required:
+      - customer_id
+      - service_desc
+      - price
+      - vin
+      - service_date
+
+  ServiceTicketUpdate:
+    type: object
+    properties:
+      customer_id:
+        type: integer
+        example: 1
+      service_desc:
+        type: string
+        example: "Oil change"
+      price:
+        type: float
+        example: 125.75
+      vin:
+        type: string
+        example: "1HGCM82633A004352"
+      service_date:
+        type: datetime
+
+  ServiceTicketResponse:
+    type: object
+    properties:
+      id: 
+        type: integer
+        example: 1
+      customer_id:
+        type: integer
+        example: 1
+      service_desc:
+        type: string
+        example: "Oil change"
+      price:
+        type: float
+        example: 125.75
+      vin:
+        type: string
+        example: "1HGCM82633A004352"
+      service_date:
+        type: datetime
+
+  ServiceTicketsResponse:
+    type: array
+    properties:
+      id: 
+        type: integer
+        example: 1
+      customer_id:
+        type: integer
+        example: 1
+      service_desc:
+        type: string
+        example: "Oil change"
+      price:
+        type: float
+        example: 125.75
+      vin:
+        type: string
+        example: "1HGCM82633A004352"
+      service_date:
+        type: datetime
+
+  PartDescriptionInput:
+    type: object
+    properties:
+      part_name:
+        type: string
+        example: "Brake Pad"
+      price:
+        type: float
+        example: 50.0
+
+
+    required:
+      - part_name
+      - price
+
+  PartDescriptionUpdate:
+    type: object
+    properties:
+      part_name:
+        type: string
+        example: "Brake Pad"
+      price:
+        type: float
+        example: 50.0
+
+  PartDescriptionResponse:
+    type: object
+    properties:
+      id: 
+        type: integer
+      part_name:
+        type: string
+        example: "Brake Pad"
+      price:
+        type: number
+        format: float
+        example: 50.0
+
+  PartDescriptionsResponse:
+    type: array
+    properties:
+      id: 
+        type: integer
+      part_name:
+        type: string
+        example: "Brake Pad"
+      price:
+        type: float
+        example: 50.0
+
+  PartResponse:
+    type: object
+    properties:
+      id:       
+        type: integer 
+      desc_id:  
+        type: integer 
+      ticket_id:
+        type: integer
+
+  PartsResponse:
+    type: array
+    properties:
+      id:       
+        type: integer 
+      desc_id:  
+        type: integer 
+      ticket_id:
+        type: integer
