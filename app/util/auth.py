@@ -26,11 +26,11 @@ def token_required(f):
 
         auth = request.headers.get("Authorization", "")
         if not auth.startswith("Bearer "):
-            return jsonify({"message": "Missing or invalid Authorization header"})
+            return jsonify({"message": "Missing or invalid Authorization header"}), 401
         token = auth.split(" ", 1)[1]
 
         try:
-            data = jwt.decode(token, SECRET_KEY, algorithms='HS256')
+            data = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
             print(data)
             request.mechanic_id = int(data['sub'])
 

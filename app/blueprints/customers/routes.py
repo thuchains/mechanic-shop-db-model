@@ -75,14 +75,14 @@ def delete_customer(customer_id):
 
 #Update customer
 @customers_bp.route('/<int:customer_id>', methods=['PUT'])
-@limiter.limit("2 per day")
+@limiter.limit("10 per day")
 def update_customers(customer_id):
     customer = db.session.get(Customers, customer_id)
     if not customer:
         return jsonify({"message": "Customer not found"}), 404
     
     try:
-        customer_data = customer_schema.load()
+        customer_data = customer_schema.load(request.json)
     except ValidationError as e:
         return jsonify({"message": e.messages}), 400
     

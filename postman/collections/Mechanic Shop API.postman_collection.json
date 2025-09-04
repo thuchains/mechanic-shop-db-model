@@ -18,6 +18,15 @@
 						},
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"customer_id\": 1,\n    \"service_desc\": \"oil change\",\n    \"price\": 100,\n    \"vin\": \"usa1204548328989\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://127.0.0.1:5000/service_tickets",
 							"protocol": "http",
@@ -49,14 +58,26 @@
 				},
 				{
 					"name": "Get a Service Ticket",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"auth": {
 							"type": "noauth"
 						},
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/service_tickets/<int:service_ticket_id>",
+							"raw": "http://127.0.0.1:5000/service_tickets/1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -67,7 +88,7 @@
 							"port": "5000",
 							"path": [
 								"service_tickets",
-								"<int:service_ticket_id>"
+								"1"
 							]
 						}
 					},
@@ -131,7 +152,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:5000/service_tickets",
+							"raw": "http://127.0.0.1:5000/service_tickets/1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -141,7 +162,8 @@
 							],
 							"port": "5000",
 							"path": [
-								"service_tickets"
+								"service_tickets",
+								"1"
 							]
 						}
 					},
@@ -167,8 +189,17 @@
 						},
 						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\n{\n    \"customer_id\": 1,\n    \"id\": 1,\n    \"price\": 50.0,\n    \"service_date\": \"2025-09-03T15:48:10.139631\",\n    \"service_desc\": \"replace oil filter\",\n    \"vin\": \"usa1204548328989\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/service_tickets",
+							"raw": "http://127.0.0.1:5000/service_tickets/1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -178,7 +209,8 @@
 							],
 							"port": "5000",
 							"path": [
-								"service_tickets"
+								"service_tickets",
+								"1"
 							]
 						}
 					},
@@ -204,8 +236,17 @@
 						},
 						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/service_tickets/<int:service_ticket_id>/add-mechanic/<int:mechanic_id>",
+							"raw": "http://127.0.0.1:5000/service_tickets/1/add-mechanic/1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -216,9 +257,9 @@
 							"port": "5000",
 							"path": [
 								"service_tickets",
-								"<int:service_ticket_id>",
+								"1",
 								"add-mechanic",
-								"<int:mechanic_id>"
+								"1"
 							]
 						}
 					},
@@ -245,7 +286,7 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:5000/service_tickets/<int:service_ticket_id>/remove-mechanic/<int:mechanic_id>",
+							"raw": "http://127.0.0.1:5000/service_tickets/1/remove-mechanic/1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -256,9 +297,9 @@
 							"port": "5000",
 							"path": [
 								"service_tickets",
-								"<int:service_ticket_id>",
+								"1",
 								"remove-mechanic",
-								"<int:mechanic_id>"
+								"1"
 							]
 						}
 					},
@@ -285,7 +326,7 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:5000/service_tickets/<int:service_ticket_id>/add-part/<int:part_description_id>",
+							"raw": "http://127.0.0.1:5000/service_tickets/1/add-part/1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -296,9 +337,9 @@
 							"port": "5000",
 							"path": [
 								"service_tickets",
-								"<int:service_ticket_id>",
+								"1",
 								"add-part",
-								"<int:part_description_id>"
+								"1"
 							]
 						}
 					},
@@ -329,6 +370,15 @@
 						},
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\n        \"address\": \"999 story rd\",\n        \"email\": \"rose.nguyen@email.com\",\n        \"first_name\": \"Rose\",\n        \"last_name\": \"Nguyen\",\n        \"phone\": \"222-333-4444\"\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://127.0.0.1:5000/customers",
 							"protocol": "http",
@@ -360,12 +410,24 @@
 				},
 				{
 					"name": "Get Customers",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"auth": {
 							"type": "noauth"
 						},
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://127.0.0.1:5000/customers",
 							"protocol": "http",
@@ -404,7 +466,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:5000/customers",
+							"raw": "http://127.0.0.1:5000/customers/1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -414,7 +476,8 @@
 							],
 							"port": "5000",
 							"path": [
-								"customers"
+								"customers",
+								"1"
 							]
 						}
 					},
@@ -440,8 +503,17 @@
 						},
 						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"address\": \"998 story rd\",\n        \"email\": \"rose.nguyen@email.com\",\n        \"first_name\": \"Rose\",\n        \"last_name\": \"Nguyen\",\n        \"phone\": \"222-333-4444\"\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/customers",
+							"raw": "http://127.0.0.1:5000/customers/1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -451,7 +523,8 @@
 							],
 							"port": "5000",
 							"path": [
-								"customers"
+								"customers",
+								"1"
 							]
 						}
 					},
@@ -471,12 +544,24 @@
 				},
 				{
 					"name": "Search Customer",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"auth": {
 							"type": "noauth"
 						},
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"rose.nguyen@email.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://127.0.0.1:5000/customers/search",
 							"protocol": "http",
@@ -516,7 +601,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:5000/customers/<int:customer_id>",
+							"raw": "http://127.0.0.1:5000/customers/1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -527,7 +612,7 @@
 							"port": "5000",
 							"path": [
 								"customers",
-								"<int:customer_id>"
+								"1"
 							]
 						}
 					},
@@ -556,8 +641,17 @@
 						"auth": {
 							"type": "noauth"
 						},
-						"method": "GET",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \n    \"email\": \"vcruz@email.com\",\n    \"password\": \"password\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://127.0.0.1:5000/mechanics/login",
 							"protocol": "http",
@@ -596,6 +690,15 @@
 						},
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"address\": \"55 Katella ave\",\n        \"email\": \"vcruz@email.com\",\n        \"first_name\": \"Victor\",\n        \"last_name\": \"Cruz\",\n        \"password\": \"password\",\n        \"salary\": 80500.0\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://127.0.0.1:5000/mechanics",
 							"protocol": "http",
@@ -666,12 +769,28 @@
 					"name": "Delete Mechanic",
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTY5NDIxNzYsImlhdCI6MTc1Njk0MDk3Niwic3ViIjoiMSJ9.n20SV-amKI1VmVroMgFSQ9hV-BU9KMmUyWEM33OfyVo",
+									"type": "string"
+								}
+							]
 						},
 						"method": "DELETE",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/mechanics",
+							"raw": "http://127.0.0.1:5000/mechanics/1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -681,7 +800,8 @@
 							],
 							"port": "5000",
 							"path": [
-								"mechanics"
+								"mechanics",
+								"1"
 							]
 						}
 					},
@@ -703,12 +823,28 @@
 					"name": "Update Mechanic",
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTY5NDIxNzYsImlhdCI6MTc1Njk0MDk3Niwic3ViIjoiMSJ9.n20SV-amKI1VmVroMgFSQ9hV-BU9KMmUyWEM33OfyVo",
+									"type": "string"
+								}
+							]
 						},
 						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"address\": \"56 Katella ave\",\n        \"email\": \"vcruz@email.com\",\n        \"first_name\": \"Victor\",\n        \"last_name\": \"Cruz\",\n        \"password\": \"password\",\n        \"salary\": 80500.0\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/mechanics",
+							"raw": "http://127.0.0.1:5000/mechanics/1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -718,7 +854,8 @@
 							],
 							"port": "5000",
 							"path": [
-								"mechanics"
+								"mechanics",
+								"1"
 							]
 						}
 					},
@@ -778,7 +915,14 @@
 					"name": "Get Related Tickets",
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTY5NDIxNzYsImlhdCI6MTc1Njk0MDk3Niwic3ViIjoiMSJ9.n20SV-amKI1VmVroMgFSQ9hV-BU9KMmUyWEM33OfyVo",
+									"type": "string"
+								}
+							]
 						},
 						"method": "GET",
 						"header": [],
@@ -821,7 +965,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:5000/mechanics/<int:mechanic_id>",
+							"raw": "http://127.0.0.1:5000/mechanics/1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -832,7 +976,7 @@
 							"port": "5000",
 							"path": [
 								"mechanics",
-								"<int:mechanic_id>"
+								"1"
 							]
 						}
 					},
@@ -863,8 +1007,17 @@
 						},
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"desc_id\": \"1\",\n    \"ticket_id\": \"1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/parts/<int:description_id>",
+							"raw": "http://127.0.0.1:5000/parts/1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -875,7 +1028,7 @@
 							"port": "5000",
 							"path": [
 								"parts",
-								"<int:description_id>"
+								"1"
 							]
 						}
 					},
@@ -902,7 +1055,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:5000/parts/<int:part_id>",
+							"raw": "http://127.0.0.1:5000/parts/1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -913,7 +1066,7 @@
 							"port": "5000",
 							"path": [
 								"parts",
-								"<int:part_id>"
+								"1"
 							]
 						}
 					},
@@ -977,7 +1130,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:5000/parts/<int:part_id>",
+							"raw": "http://127.0.0.1:5000/parts/1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -988,7 +1141,7 @@
 							"port": "5000",
 							"path": [
 								"parts",
-								"<int:part_id>"
+								"1"
 							]
 						}
 					},
@@ -1053,6 +1206,15 @@
 						},
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"part_name\": \"K&N oil filter\",\n    \"price\": \"25.99\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://127.0.0.1:5000/parts/descriptions",
 							"protocol": "http",
@@ -1092,7 +1254,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:5000/parts/<int:part_id>/descriptions",
+							"raw": "http://127.0.0.1:5000/parts/1/descriptions",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1103,7 +1265,7 @@
 							"port": "5000",
 							"path": [
 								"parts",
-								"<int:part_id>",
+								"1",
 								"descriptions"
 							]
 						}
@@ -1168,8 +1330,17 @@
 						},
 						"method": "DELETE",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/parts/descriptions",
+							"raw": "http://127.0.0.1:5000/parts/descriptions/1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1180,7 +1351,8 @@
 							"port": "5000",
 							"path": [
 								"parts",
-								"descriptions"
+								"descriptions",
+								"1"
 							]
 						}
 					},

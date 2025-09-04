@@ -44,7 +44,7 @@ class Mechanics(Base):
     first_name: Mapped[str] = mapped_column(String(120), nullable=False)
     last_name: Mapped[str] = mapped_column(String(120), nullable=False)
     email: Mapped[str] = mapped_column(String(200), nullable=False, unique=True)
-    password: Mapped[str] = mapped_column(String(150), nullable=False, unique=False)
+    password: Mapped[str] = mapped_column(String(500), nullable=False, unique=False)
     salary: Mapped[float] = mapped_column(Float, nullable=False)
     address: Mapped[str] = mapped_column(String(200), nullable=False)
 

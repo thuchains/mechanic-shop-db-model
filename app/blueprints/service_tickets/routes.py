@@ -98,7 +98,7 @@ def update_service_ticket(service_ticket_id):
     if not service_ticket:
         return jsonify({"message": "Service ticket not found"}), 400
     try:
-        service_ticket_data = service_ticket_schema.load()
+        service_ticket_data = service_ticket_schema.load(request.json)
     except ValidationError as e:
         return jsonify({"message": e.messages}), 400
     
@@ -110,13 +110,13 @@ def update_service_ticket(service_ticket_id):
 
 #Add part in service ticket
 @service_tickets_bp.route('/<int:service_ticket_id>/add-part/<int:part_description_id>', methods=['PUT'])
-def add_part(service_ticket_id, description_id):
-    part = db.session.get(Parts).where(Parts.service_ticket_id==None, Parts.desc_id==description_id).first()
+def add_part(service_ticket_id, part_description_id):
+    part = db.session.query(Parts).where(Parts.ticket_id==None, Parts.desc_id==part_description_id).first()
 
     if not part:
         return jsonify("Part out of stock"), 404
     
-    part.service_ticket_id = service_ticket_id
+    part.ticket_id = service_ticket_id
     db.session.commit()
     return jsonify({
         "message": f"Successfully added {part.part_description.part_name} to service ticket {service_ticket_id}"

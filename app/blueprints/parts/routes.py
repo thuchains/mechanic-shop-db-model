@@ -112,6 +112,14 @@ def read_part_descriptions():
 @limiter.limit("10 per hour")
 def delete_part_description(part_description_id):
     part_description = db.session.get(PartDescriptions, part_description_id)
+    if not part_description:
+        return jsonify({"message": "Part description not found"})
+    
+    in_use = db.session.query(Parts.id).where(Parts.desc_id==part_description_id).first()
+    if in_use:
+        return jsonify({
+            "message": "Cannot delete: parts exist with this description. Delete those parts first."
+        }), 409
     db.session.delete(part_description)
     db.session.commit()
 
