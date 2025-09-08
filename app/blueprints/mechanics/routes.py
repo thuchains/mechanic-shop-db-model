@@ -40,6 +40,10 @@ def create_mechanic():
         return jsonify(e.messages), 400
     
     data['password'] = generate_password_hash(data['password'])
+
+    mechanic = db.session.query(Mechanics).where(Mechanics.email==data['email']).first()
+    if mechanic:
+        return jsonify({"message": "Email already taken"}), 400
     
     new_mechanic = Mechanics(**data)
     db.session.add(new_mechanic)
@@ -65,12 +69,15 @@ def read_mechanics():
 
 #Delete mechanic
 @mechanics_bp.route('/<int:mechanic_id>', methods=['DELETE'])
-@limiter.limit("5 per day")
+# @limiter.limit("5 per day")
 @token_required
 def delete_mechanic(mechanic_id):
     token_id = request.mechanic_id
 
     mechanic = db.session.get(Mechanics, token_id)
+    if not mechanic:
+        return jsonify({"message": "Mechanic not found"}), 404
+    
     db.session.delete(mechanic)
     db.session.commit()
     return jsonify({"message": f"Successfully deleted mechanic {token_id}"}), 200
@@ -78,7 +85,7 @@ def delete_mechanic(mechanic_id):
 
 #Update mechanic
 @mechanics_bp.route('/<int:mechanic_id>', methods=["PUT"])
-@limiter.limit("5 per hour")
+# @limiter.limit("5 per hour")
 @token_required
 def update_mechanic(mechanic_id):
     mechanic = db.session.get(Mechanics, mechanic_id)
@@ -90,9 +97,9 @@ def update_mechanic(mechanic_id):
     except ValidationError as e:
         return jsonify({"message": e.messages}), 400
     
-    mechanic_data['password'] = generate_password_hash(mechanic_data['password'])
+    if 'password' in mechanic_data:
+        mechanic_data['password'] = generate_password_hash(mechanic_data['password'])
 
-    
     for key, value in mechanic_data.items():
         setattr(mechanic, key, value)
 
@@ -113,7 +120,7 @@ def get_popular_mechanics():
         }
         output.append(mechanic_format)
 
-    return jsonify(output)
+    return jsonify(output), 200
 
 #Get service tickets related to mechanic
 @mechanics_bp.route('/my-tickets', methods=['GET'])
