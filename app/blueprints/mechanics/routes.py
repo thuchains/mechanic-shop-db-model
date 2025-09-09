@@ -69,7 +69,7 @@ def read_mechanics():
 
 #Delete mechanic
 @mechanics_bp.route('/<int:mechanic_id>', methods=['DELETE'])
-# @limiter.limit("5 per day")
+@limiter.limit("5 per day")
 @token_required
 def delete_mechanic(mechanic_id):
     token_id = request.mechanic_id
@@ -85,7 +85,7 @@ def delete_mechanic(mechanic_id):
 
 #Update mechanic
 @mechanics_bp.route('/<int:mechanic_id>', methods=["PUT"])
-# @limiter.limit("5 per hour")
+@limiter.limit("5 per hour")
 @token_required
 def update_mechanic(mechanic_id):
     mechanic = db.session.get(Mechanics, mechanic_id)

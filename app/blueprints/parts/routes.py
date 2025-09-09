@@ -12,13 +12,17 @@ from marshmallow import ValidationError
 def create_part(description_id):
     quantity = request.args.get('qty', 1, type=int)
     count = 0
+    part_desc = db.session.get(PartDescriptions, description_id)
+    if part_desc is None:
+        return jsonify({"message": "Part description not found"}), 404
+    
     while count < quantity:
         new_part = Parts(desc_id=description_id)
         db.session.add(new_part)
         count += 1
 
     db.session.commit()
-    return jsonify(f"You have successfully created {quantity} part {description_id}(s)"), 200
+    return jsonify(f"You have successfully created {quantity} part {description_id}(s)"), 201
 
 
 #View part
@@ -123,4 +127,4 @@ def delete_part_description(part_description_id):
     db.session.delete(part_description)
     db.session.commit()
 
-    return jsonify({"message": "Successfully deleted part description"})
+    return jsonify({"message": "Successfully deleted part description"}), 200

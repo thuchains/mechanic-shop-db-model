@@ -57,7 +57,7 @@ class ServiceTickets(Base):
     customer_id: Mapped[int] = mapped_column(Integer, ForeignKey('customers.id'), nullable=False)
     service_desc: Mapped[str] = mapped_column(String(500), nullable=False)
     price: Mapped[float] = mapped_column(Float, nullable=False)
-    vin: Mapped[str] = mapped_column(String(200), nullable=False, unique=True)
+    vin: Mapped[str] = mapped_column(String(200), nullable=False)
     service_date: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, nullable=False)
     
     mechanics: Mapped[list['Mechanics']] = relationship("Mechanics", secondary=ticket_mechanics, back_populates="service_tickets")

@@ -30,18 +30,24 @@ def create_service_ticket():
 @limiter.limit("10 per hour")
 def add_mechanic(service_ticket_id, mechanic_id):
     service_ticket = db.session.get(ServiceTickets, service_ticket_id)
-    mechanic = db.session.get(Mechanics, mechanic_id)
-
-    if mechanic not in service_ticket.mechanics:
-        service_ticket.mechanics.append(mechanic)
-        db.session.commit()
-        return jsonify({
-            "message": f"Successfully added {mechanic.first_name} to service ticket",
-            "Service ticket": service_ticket_schema.dump(service_ticket), #use dump when schema is adding just a piece of return message
-            "Mechanics": mechanics_schema.dump(service_ticket.mechanics) 
-        }), 200
+    if service_ticket is None:
+        return jsonify({"message": "Service ticket not found"}), 404
     
-    return jsonify("This mechanic is already assigned to this service ticket"), 400
+    mechanic = db.session.get(Mechanics, mechanic_id)
+    if mechanic is None:
+        return jsonify({"message": "Mechanic not found"}), 404
+    
+    if mechanic in service_ticket.mechanics:
+        return jsonify({"message": "This mechanic is already assigned to this service ticket"}), 400
+        
+    service_ticket.mechanics.append(mechanic)
+    db.session.commit()
+
+    return jsonify({
+        "message": f"Successfully added {mechanic.first_name} to service ticket",
+        "Service ticket": service_ticket_schema.dump(service_ticket), #use dump when schema is adding just a piece of return message
+        "Mechanics": mechanics_schema.dump(service_ticket.mechanics) 
+    }), 200
 
 
 #Remove mechanic from service ticket
@@ -120,7 +126,7 @@ def add_part(service_ticket_id, part_description_id):
     db.session.commit()
     return jsonify({
         "message": f"Successfully added {part.part_description.part_name} to service ticket {service_ticket_id}"
-    })
+    }), 200
 
 
 
