@@ -158,13 +158,6 @@ paths: #Information about our routes
       summary: "Get tickets related to the authenticated mechanic"
       security:
         - bearerAuth: []
-      parameters:
-        - in: "body"
-          name: "body"
-          description: "Get a Mechanic's Service Tickets"
-          required: true
-          schema:
-            $ref: "#/definitions/ServiceTicketInput"
 
       responses:
         200:
@@ -255,7 +248,7 @@ paths: #Information about our routes
               last_name: "Doe"
               address: "123 Fun St."
               email: "test@test.com"
-              phone: "555-555-5556
+              phone: "555-555-5556"
               id: 1
     
     delete: #Delete a customer
@@ -264,9 +257,9 @@ paths: #Information about our routes
       summary: "Delete a Customer"
       description: "Endpoint to delete a customer"
       parameters:
-        - in: "body"
-          name: "body"
-          type: integer
+        - in: "path"
+          name: "customer_id"
+          type: "integer"
           required: true
 
       responses:
@@ -334,9 +327,9 @@ paths: #Information about our routes
 
       responses:
         200:
-          description: "Successfully Retrieved Service Tickets"
+          description: "Successfully Retrieved Service Ticket"
           schema:
-            $ref: "#/definitions/ServiceTicketsResponse"
+            $ref: "#/definitions/ServiceTicketResponse"
 
     put: #Update a Service Ticket
       tags:
@@ -433,7 +426,7 @@ paths: #Information about our routes
               mechanic_id: 1
               ticket_id: 1
               
-/service_tickets/{service_ticket_id}/add-part/{part_description_id}:
+  /service_tickets/{service_ticket_id}/add-part/{part_description_id}:
     put:
       tags:
         - ServiceTickets
@@ -801,7 +794,8 @@ definitions: #Information about the shape of input and output json
     items:
       type: object
       properties:
-        id: integer
+        id: 
+          type: integer
         first_name:
           type: string
         last_name:
@@ -811,7 +805,7 @@ definitions: #Information about the shape of input and output json
         email:
           type: string
         phone:
-        type: string
+          type: string
           
   ServiceTicketInput:
     type: object
@@ -829,7 +823,8 @@ definitions: #Information about the shape of input and output json
         type: string
         example: "1HGCM82633A004352"
       service_date:
-        type: datetime
+        type: string
+        format: date-time
 
 
     required:
@@ -855,7 +850,8 @@ definitions: #Information about the shape of input and output json
         type: string
         example: "1HGCM82633A004352"
       service_date:
-        type: datetime
+        type: string
+        format: date-time
 
   ServiceTicketResponse:
     type: object
@@ -876,11 +872,12 @@ definitions: #Information about the shape of input and output json
         type: string
         example: "1HGCM82633A004352"
       service_date:
-        type: datetime
+        type: string
+        format: date-time
 
   ServiceTicketsResponse:
     type: array
-    properties:
+    items:
       id: 
         type: integer
         example: 1
@@ -897,7 +894,8 @@ definitions: #Information about the shape of input and output json
         type: string
         example: "1HGCM82633A004352"
       service_date:
-        type: datetime
+        type: string
+        format: date-time
 
   PartDescriptionInput:
     type: object
@@ -939,7 +937,7 @@ definitions: #Information about the shape of input and output json
 
   PartDescriptionsResponse:
     type: array
-    properties:
+    items:
       id: 
         type: integer
       part_name:
@@ -961,7 +959,7 @@ definitions: #Information about the shape of input and output json
 
   PartsResponse:
     type: array
-    properties:
+    items:
       id:       
         type: integer 
       desc_id:  
