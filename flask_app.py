@@ -10,3 +10,5 @@ with app.app_context():
     db.create_all() 
 
 # app.run()
+
+#small comment before deploy
