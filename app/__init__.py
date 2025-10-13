@@ -22,7 +22,7 @@ def create_app(TestingConfig): #Defines a factory function >> creates and return
     ma.init_app(app)
     limiter.init_app(app)
     cache.init_app(app)
-    CORS.init_app(app)
+    CORS(app)
 
 
     #register blueprints
