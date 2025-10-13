@@ -7,7 +7,7 @@ from .blueprints.mechanics import mechanics_bp
 from .blueprints.service_tickets import service_tickets_bp
 from .blueprints.parts import parts_bp
 from flask_swagger_ui import get_swaggerui_blueprint
-
+from flask_cors import CORS
 
 SWAGGER_URL = '/api/docs'
 API_URL = '/static/swagger.yaml'
@@ -22,6 +22,7 @@ def create_app(config_name): #Defines a factory function >> creates and returns 
     ma.init_app(app)
     limiter.init_app(app)
     cache.init_app(app)
+    CORS.init_app(app)
 
 
     #register blueprints
