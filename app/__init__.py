@@ -14,9 +14,9 @@ API_URL = '/static/swagger.yaml'
 
 swagger_blueprint = get_swaggerui_blueprint(SWAGGER_URL, API_URL, config={'app_name': 'Mechanic Shop Management API'})
 
-def create_app(config_name): #Defines a factory function >> creates and returns a Flask app
+def create_app(TestingConfig): #Defines a factory function >> creates and returns a Flask app
     app = Flask(__name__) #Creates Flask app instance
-    app.config.from_object(f"config.{config_name}")
+    app.config.from_object(f"config.{TestingConfig}")
 
     db.init_app(app)
     ma.init_app(app)
