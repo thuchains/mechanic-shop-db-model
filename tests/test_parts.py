@@ -1,4 +1,4 @@
-from app import create_app
+from flask_app import create_app
 from app.models import ServiceTickets, db, Parts, PartDescriptions
 import unittest
 from sqlalchemy import select

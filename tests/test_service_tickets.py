@@ -1,4 +1,4 @@
-from app import create_app
+from flask_app import create_app
 from app.models import ServiceTickets, db, Mechanics, Parts, PartDescriptions
 import unittest
 from datetime import date
